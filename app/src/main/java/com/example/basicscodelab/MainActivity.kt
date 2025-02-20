@@ -165,6 +165,15 @@ fun GreetingPreview() {
 fun OnboardingScreen(onBoardingClicked: ()->Unit,     //By passing a function and not a state to
 // OnboardingScreen we are making this composable more reusable and protecting the state from being
 // mutated by other composables.
+
+//In technical terms,this is how state hoisting works:
+//1. Centralized Control: The parent component holds the state and becomes the single source of
+// truth for that piece of data.
+//2. Passing Down: The parent component passes the state down to the child components as props.
+//3. Updating State: If a child component needs to update the state, it sends a request back up to
+// the parent component, usually through a callback function, and the parent component updates the
+// state accordingly.
+
     modifier: Modifier = Modifier) {
     // TODO: This state should be hoisted
     //shouldShowOnboarding is using a by keyword instead of the '='

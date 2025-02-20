@@ -26,6 +26,8 @@ import androidx.compose.ui.unit.dp
 import com.example.basicscodelab.ui.theme.BasicsCodelabTheme
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Button
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
@@ -106,12 +108,16 @@ fun MyApp(
 
 @Composable
 private fun Greetings(modifier: Modifier = Modifier,
-                      names: List<String> = listOf("World", "Compose")){
-    Column(modifier = modifier.padding(vertical = 4.dp)) {
-        for (name in names) {
-            Greeting(name = name)
-        }
-    }
+                      names: List<String> = List(1000) { "$it" }
+){
+    LazyColumn(modifier = modifier.padding(vertical = 4.dp)) { items(items = names){
+        name -> Greeting(name = name)
+    } }
+//    Column() {
+//        for (name in names) {
+//            Greeting(name = name)
+//        }
+//    }
 }
 
 @Preview(showBackground = true, widthDp = 320)

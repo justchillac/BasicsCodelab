@@ -30,6 +30,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Button
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 
@@ -97,7 +98,9 @@ class MainActivity : ComponentActivity() {
 fun MyApp(
     modifier: Modifier = Modifier
 ) {
-    var shouldShowOnBoarding by remember { mutableStateOf(true) }
+    //Instead of using remember you can use rememberSaveable. This will save each state surviving
+    // configuration changes (such as rotations) and process death.
+    var shouldShowOnBoarding by rememberSaveable { mutableStateOf(true) }
 
     Surface(modifier) { if(shouldShowOnBoarding){
         OnboardingScreen(onBoardingClicked = ({shouldShowOnBoarding = false}))
@@ -138,7 +141,11 @@ fun MyAppPreview() {
 
 @Composable
 fun Greeting(name: String, modifier: Modifier = Modifier) {
-    val expanded = remember{ mutableStateOf(false)}  //Here mutableStateOf recomposes the function
+    //If you expand a list item and then either scroll the list until the item is out of view,
+    // or rotate the device and then go back to the expanded item, you'll see that the item is
+    // back to its initial state.
+    //The solution for this is to use rememberSaveable instead of remember for the expanded state as well
+    val expanded = rememberSaveable{ mutableStateOf(false)}  //Here mutableStateOf recomposes the function
     //whereas remember preserves last state after recomposition
     //This means remember guards the state against recomposition so that the state is not reset
     val extraPadding = if(expanded.value) 48.dp else 0.dp

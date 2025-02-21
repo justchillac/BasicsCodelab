@@ -1,9 +1,15 @@
 package com.example.basicscodelab
 
+import android.content.res.Configuration
+import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.core.spring
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 //import androidx.compose.foundation.layout.FlowRowScopeInstance.weight
@@ -33,6 +39,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.text.font.FontWeight
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -148,7 +155,13 @@ fun Greeting(name: String, modifier: Modifier = Modifier) {
     val expanded = rememberSaveable{ mutableStateOf(false)}  //Here mutableStateOf recomposes the function
     //whereas remember preserves last state after recomposition
     //This means remember guards the state against recomposition so that the state is not reset
-    val extraPadding = if(expanded.value) 48.dp else 0.dp
+    val extraPadding by animateDpAsState(
+        if(expanded.value) 48.dp else 0.dp,
+        animationSpec = spring(  //For now this animation can cause the app to crash
+            dampingRatio = Spring.DampingRatioMediumBouncy,
+            stiffness = Spring.StiffnessLow
+        )
+    )
 
     Surface(
         color = MaterialTheme.colorScheme.primary,
@@ -159,17 +172,27 @@ fun Greeting(name: String, modifier: Modifier = Modifier) {
                 .weight(1f)
                 .padding(bottom = extraPadding)) {
                 Text(text = "Hello ")
-                Text(text = name)
+                Text(text = name,
+                    style = MaterialTheme.typography.headlineMedium.copy(  //copy lets you modify a predefined style
+                        fontWeight = FontWeight.ExtraBold
+                    ))
             }
             ElevatedButton(onClick = {expanded.value = !expanded.value}) { Text(text = if (expanded.value) "Show less" else "Show more") }
         }
     }
 }
 
+@Preview(
+    showBackground = true,
+    widthDp = 320,
+    uiMode = UI_MODE_NIGHT_YES,
+    name = "GreetingPreviewDark"
+)
+
 @Preview(showBackground = true)
 @Composable
 fun GreetingPreview() {
-    BasicsCodelabTheme {
+    BasicsCodelabTheme(dynamicColor = false) {
         Greetings()
     }
 }
@@ -207,10 +230,17 @@ fun OnboardingScreen(onBoardingClicked: ()->Unit,     //By passing a function an
     }
 }
 
+@Preview(
+    showBackground = true,
+    widthDp = 320,
+    uiMode = UI_MODE_NIGHT_YES,
+    name = "OnboardingPreviewDark"
+)
+
 @Preview(showBackground = true, widthDp = 320, heightDp = 320)
 @Composable
 fun OnboardingPreview() {
-    BasicsCodelabTheme {
+    BasicsCodelabTheme(dynamicColor = false) {
         OnboardingScreen(onBoardingClicked = {})
     }
 }

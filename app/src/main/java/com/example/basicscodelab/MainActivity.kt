@@ -39,6 +39,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ExpandLess
 import androidx.compose.material.icons.filled.ExpandMore
 import androidx.compose.material3.Button
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.runtime.getValue
@@ -156,11 +158,19 @@ fun MyAppPreview() {
 
 @Composable
 fun Greeting(name: String, modifier: Modifier = Modifier) {
+
+    Card(modifier = modifier.padding(vertical = 4.dp, horizontal = 8.dp),
+         colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.primary
+        )
+    ){
+        CardContent(name = name)
+    }
     //If you expand a list item and then either scroll the list until the item is out of view,
     // or rotate the device and then go back to the expanded item, you'll see that the item is
     // back to its initial state.
     //The solution for this is to use rememberSaveable instead of remember for the expanded state as well
-    val expanded = rememberSaveable{ mutableStateOf(false)}  //Here mutableStateOf recomposes the function
+//    val expanded = rememberSaveable{ mutableStateOf(false)}  //Here mutableStateOf recomposes the function
     //whereas remember preserves last state after recomposition
     //This means remember guards the state against recomposition so that the state is not reset
 //    val extraPadding by animateDpAsState(
@@ -171,38 +181,45 @@ fun Greeting(name: String, modifier: Modifier = Modifier) {
 //        )
 //    )
 
-    Surface(
-        color = MaterialTheme.colorScheme.primary,
-        modifier = modifier.padding(vertical = 4.dp, horizontal = 8.dp)
-    ) {
-        Row(modifier = Modifier.padding(24.dp)
-            .animateContentSize(
-                animationSpec = spring(
-                    dampingRatio = Spring.DampingRatioMediumBouncy,
-                    stiffness = Spring.StiffnessLow
+//    Surface(
+//        color = MaterialTheme.colorScheme.primary,
+//        modifier = modifier.padding(vertical = 4.dp, horizontal = 8.dp)
+//    ) {
+//
+//    }
+}
+
+@Composable
+fun CardContent(name: String) {
+    val expanded = rememberSaveable{ mutableStateOf(false)}
+
+    Row(modifier = Modifier.padding(24.dp)
+        .animateContentSize(
+            animationSpec = spring(
+                dampingRatio = Spring.DampingRatioMediumBouncy,
+                stiffness = Spring.StiffnessLow
+            )
+        )) {
+        Column(modifier = Modifier
+            .weight(1f)
+        ) {
+            Text(text = "Hello ")
+            Text(text = name,
+                style = MaterialTheme.typography.headlineMedium.copy(  //copy lets you modify a predefined style
+                    fontWeight = FontWeight.ExtraBold
+                ))
+            if(expanded.value){
+                Text(
+                    text = ("Composem ipsum color sit lazy, " +
+                            "padding theme elit, sed do bouncy. ").repeat(4)
                 )
-            )) {
-            Column(modifier = Modifier
-                .weight(1f)
-                ) {
-                Text(text = "Hello ")
-                Text(text = name,
-                    style = MaterialTheme.typography.headlineMedium.copy(  //copy lets you modify a predefined style
-                        fontWeight = FontWeight.ExtraBold
-                    ))
-                if(expanded.value){
-                    Text(
-                        text = ("Composem ipsum color sit lazy, " +
-                                "padding theme elit, sed do bouncy. ").repeat(4)
-                    )
-                }
             }
+        }
 //            ElevatedButton(onClick = {expanded.value = !expanded.value}) { Text(text = if (expanded.value) "Show less" else "Show more") }
-              IconButton(onClick = {expanded.value = !expanded.value}) {
-                  Icon(imageVector = if(expanded.value) Icons.Filled.ExpandLess else Icons.Filled.ExpandMore,
-                      contentDescription = if(expanded.value) stringResource(R.string.show_less) else stringResource(R.string.show_more)
-                  )
-              }
+        IconButton(onClick = {expanded.value = !expanded.value}) {
+            Icon(imageVector = if(expanded.value) Icons.Filled.ExpandLess else Icons.Filled.ExpandMore,
+                contentDescription = if(expanded.value) stringResource(R.string.show_less) else stringResource(R.string.show_more)
+            )
         }
     }
 }

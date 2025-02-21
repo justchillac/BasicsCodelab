@@ -2,4 +2,10 @@
 
 Check out the demo video below:
 
-<iframe src="https://vimeo.com/1058880485/adca083dac" width="640" height="360" frameborder="0" allow="autoplay; fullscreen" allowfullscreen></iframe>
+### If you run the app correctly:                                            
+![Demo GIF](https://github.com/justchillac/BasicsCodelab/blob/AnimatingList/BasicsCodelab1-ezgif.com-resize.gif) 
+
+
+
+### Also this is how the animations should look like:
+![Demo2](https://github.com/justchillac/BasicsCodelab/blob/AnimatingList/BasicsCodelab1-ezgif.com-resize%20(1).gif)

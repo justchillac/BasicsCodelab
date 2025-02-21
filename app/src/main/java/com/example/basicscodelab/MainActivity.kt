@@ -6,6 +6,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.spring
@@ -34,12 +35,19 @@ import com.example.basicscodelab.ui.theme.BasicsCodelabTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ExpandLess
+import androidx.compose.material.icons.filled.ExpandMore
 import androidx.compose.material3.Button
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import kotlin.math.exp
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -155,29 +163,46 @@ fun Greeting(name: String, modifier: Modifier = Modifier) {
     val expanded = rememberSaveable{ mutableStateOf(false)}  //Here mutableStateOf recomposes the function
     //whereas remember preserves last state after recomposition
     //This means remember guards the state against recomposition so that the state is not reset
-    val extraPadding by animateDpAsState(
-        if(expanded.value) 48.dp else 0.dp,
-        animationSpec = spring(  //For now this animation can cause the app to crash
-            dampingRatio = Spring.DampingRatioMediumBouncy,
-            stiffness = Spring.StiffnessLow
-        )
-    )
+//    val extraPadding by animateDpAsState(
+//        if(expanded.value) 48.dp else 0.dp,
+//        animationSpec = spring(  //For now this animation can cause the app to crash
+//            dampingRatio = Spring.DampingRatioMediumBouncy,
+//            stiffness = Spring.StiffnessLow
+//        )
+//    )
 
     Surface(
         color = MaterialTheme.colorScheme.primary,
         modifier = modifier.padding(vertical = 4.dp, horizontal = 8.dp)
     ) {
-        Row(modifier = Modifier.padding(24.dp)) {
+        Row(modifier = Modifier.padding(24.dp)
+            .animateContentSize(
+                animationSpec = spring(
+                    dampingRatio = Spring.DampingRatioMediumBouncy,
+                    stiffness = Spring.StiffnessLow
+                )
+            )) {
             Column(modifier = Modifier
                 .weight(1f)
-                .padding(bottom = extraPadding)) {
+                ) {
                 Text(text = "Hello ")
                 Text(text = name,
                     style = MaterialTheme.typography.headlineMedium.copy(  //copy lets you modify a predefined style
                         fontWeight = FontWeight.ExtraBold
                     ))
+                if(expanded.value){
+                    Text(
+                        text = ("Composem ipsum color sit lazy, " +
+                                "padding theme elit, sed do bouncy. ").repeat(4)
+                    )
+                }
             }
-            ElevatedButton(onClick = {expanded.value = !expanded.value}) { Text(text = if (expanded.value) "Show less" else "Show more") }
+//            ElevatedButton(onClick = {expanded.value = !expanded.value}) { Text(text = if (expanded.value) "Show less" else "Show more") }
+              IconButton(onClick = {expanded.value = !expanded.value}) {
+                  Icon(imageVector = if(expanded.value) Icons.Filled.ExpandLess else Icons.Filled.ExpandMore,
+                      contentDescription = if(expanded.value) stringResource(R.string.show_less) else stringResource(R.string.show_more)
+                  )
+              }
         }
     }
 }
